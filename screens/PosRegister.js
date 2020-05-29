@@ -31,78 +31,115 @@ const styles = StyleSheet.create({
 const { height } = Dimensions.get('window');
 
 class PosRegister extends Component {
+constructor(){
 
-  constructor(){
     super();
+
     this.state={
-       city :'',
-     country :'',
-     address :'',
-     fullName:'',
-     GerantName:'',
-     AgencePhone:'' 
-      
+      typePos: 'POS',
+     nomCommercial :'',
+      fullName:'',
+      agentTerrain:'',
+      telephone:'',
+      email:'',
+       pays :'',
+     ville :'',
+      adresse :'',
+      rccm :'' ,
+      id_dis:'' 
     }
   }
 
   register(text, field){
-    if(field=='city'){
+    if(field=='ville'){
       this.setState({
-        city:text,
+        ville:text,
       })
-    }else if(field =='country'){
+    }else if(field =='pays'){
       this.setState({
-        country:text,
+        pays:text,
       })
-    }else if(field =='address'){
+    }else if(field =='adresse'){
       this.setState({
-        address:text,
+        adresse:text,
       })
-    }else if(field =='GerantName'){
+    }else if(field =='nomCommercial'){
       this.setState({
-        GerantName:text,
+        nomCommercial:text,
       })
-    }else if(field =='AgencePhone'){
+    }else if(field =='telephone'){
       this.setState({
-        AgencePhone:text,
+        telephone:text,
       })
     }
-    
+    else if(field =='fullName'){
+      this.setState({
+        fullName:text,
+      })
+    } else if(field =='typePos'){
+      this.setState({
+        typePos:text,
+      })
+    }else if(field =='rccm'){
+      this.setState({
+        rccm:text,
+      })
+    }else if(field =='email'){
+      this.setState({
+        email:text,
+      })
+    }
   }
 
   submit(navigation){
     let collection={}
     collection.fullName=this.state.fullName,
-    collection.address=this.state.address,
-    collection.country=this.state.country,
-    collection.GerantName=this.state.GerantName,
-    collection.AgencePhone=this.state.AgencePhone,
-    collection.city=this.state.city
+    collection.email=this.state.email,
+    collection.pays=this.state.pays,
+    collection.ville=this.state.ville
+    collection.adresse=this.state.adresse,
+    collection.nomCommercial=this.state.nomCommercial,
+    collection.rccm=this.state.rccm,
+     collection.agentTerrain=this.state.agentTerrain,
+     collection.typePos=this.state.typePos,
+      collection.id_dis=this.state.id_dis
    
-    console.warn(collection);
-
      axios({
       method: 'post',
-      url:  'http://192.168.8.102:3000/pos',
+      url:  'http://192.168.8.104:3000/dis',
       data: collection
     })
-    
     .then(function (response) {
+          console.log(response)
+          if(response.data.message=="succes"){
 
-      if(response.data=='ok'){ 
-      Toast.show('Vous avez bien enrégistré le Point de Vente!!');
-       console.log(response.data);
-      navigation.navigate('Overview'); 
-      
-     }else{
-      console.log(response.data);
-      Toast.show('une Erreur est survenue Veillez réeassayer');
-      }
- 
+          Toast.show('Vous avez bien enregistré le POS!!');
+          navigation.navigate('PosRegister'); 
+              
+        
+           }else if(response.data.message=="Existe déjà"){
+            console.log(response.data.message); 
+         
+            Toast.show('lutilisateur existe deja');
+            }else{
+                Toast.show('Verifier tous les champs ');
+            }
+       
     })  
     .catch(function (error) {
       console.log(error);
     });
+    this.setState({
+       typePos: 'Pos',
+       nomCommercial :'',
+        fullName:'',
+        telephone:'',
+        email:'',
+        pays :'',
+        ville :'',
+        adresse :'',
+        rccm :''   
+    })
     
   }
 
@@ -112,6 +149,11 @@ class PosRegister extends Component {
  
 
    const { navigation } = this.props;
+    const id = navigation.getParam('id', 'unknown'); 
+    const agentTerrain = navigation.getParam('agentTerrain', 'unknown'); 
+    this.state.id_dis=id;
+    this.state.agentTerrain=agentTerrain;
+
      return (
      
 
@@ -135,7 +177,7 @@ class PosRegister extends Component {
             <Block row space="between" style={{ marginTop: 25 }}>
               <Block>
             
-              <Text center h3 regular  color="white">FORMULAIRE D'ENREGISTREMENT DES POINTS DE VENTE</Text>
+              <Text center h3 regular  color="white">ENREGISTRER LES POINTS DE VENTE DU DISTRIBUTEUR</Text>
               </Block>
             </Block>
           </Card>
@@ -149,65 +191,96 @@ class PosRegister extends Component {
             <Block   style={{ marginTop: 14 }}>
             <Block>
 
-             <Input
-                full
-                label="Nom du Point de Vente"
-                placeholder="Nom du Point de vente"
-                onChangeText={(text)=>this.register(text,'fullName')}
-                style={{ marginBottom: 10 ,height: 40 }}
-              />
+              <Input
+              full
+              label="Nom commercial "
+              value={this.state.nomCommercial}
+               placeholder="Nom Commercial"
+               onChangeText={(text)=>this.register(text,'nomCommercial')}
+              style={{ marginBottom: 10,height: 40  }}
+            />
              <Input
               full
-              label="Ville"
-              placeholder="Ville"
-              onChangeText={(text)=>this.register(text,'city')}
-              style={{ marginBottom: 10,height: 40 }}
-             
+              text
+              label="Nom du Gerant"
+              value={this.state.fullName}
+               placeholder="Nom et prenom du Gerant"
+               onChangeText={(text)=>this.register(text,'fullName')}
+              style={{ marginBottom: 10,height: 40}}
             />
+
+            <Input
+              full
+              number
+               value={this.state.telephone}
+              label="Numéro Télephone"
+              onChangeText={(text)=>this.register(text,'telephone')}
+               placeholder="Ex: + 225 -- -- -- -- -- -- "
+              style={{ marginBottom: 10,height: 40 }}
+            />
+            </Block>
+             <Input
+              full
+              text
+              label="Email"
+              value={this.state.email}
+              onChangeText={(text)=>this.register(text,'email')}
+               placeholder="Ex: email@email.email "
+              style={{ marginBottom: 10,height: 40 }}
+            />
+
+           
 
              <Input
               full
               label="Pays"
-              placeholder="Ex: Côte d'Ivoire"
-              onChangeText={(text)=>this.register(text,'country')}
-              style={{ marginBottom: 10 ,height: 40 }}
-            />
-            </Block>
-              <Input
-              full
-              label="Adresse"
-              placeholder="Adresse"
-              onChangeText={(text)=>this.register(text,'address')}
-              style={{ marginBottom: 10,height: 40}}
-            />
-           
-
-            <Input
-              full
-              text
-              label="NOM DU GERANT"
-              placeholder="Nom du gérant"
-              onChangeText={(text)=>this.register(text,'GerantName')}
-              style={{ marginBottom: 10}}
+              value={this.state.pays}
+              onChangeText={(text)=>this.register(text,'pays')}
+               placeholder="Pays"
+              style={{ marginBottom: 10,height: 40 }}
             />
              
-            <Input
-              full
-              number
-              label="Numéro de Téléphone"
-              onChangeText={(text)=>this.register(text,'AgencePhone')}
-              placeholder="Ex: + 225 -- -- -- -- -- -- "
-              style={{ marginBottom: 10 }}
-            /> 
+           <Input
+                full
+                text
+                label="Ville"
+                 value={this.state.ville}
+                 placeholder="EX: Commune,Quartier-Rue n'"
+                 onChangeText={(text)=>this.register(text,'ville')}
+                style={{ marginBottom: 10 ,height: 40}}
+              />
 
- 
+              <Input
+                full
+                text
+                label="Adresse"
+                 placeholder="Ville"
+                 value={this.state.adresse}
+                 onChangeText={(text)=>this.register(text,'adresse')}
+                style={{ marginBottom: 10 ,height: 40}}
+              />
+
+               <Input
+                full
+                text
+                label="Registre de commerce"
+                 placeholder="registre de commerce"
+                value={this.state.rccm}
+                 onChangeText={(text)=>this.register(text,'rccm')}
+                style={{ marginBottom: 10 ,height: 40}}
+              />
+
+
               <Button
                 full
                 style={{ marginBottom: 12 }}
-                onPress={() => this.submit(navigation)}
+                color="#6281C0" 
+                onPress={()=>this.submit(navigation)}
               >
                 <Text button>Valider</Text>
               </Button>
+ 
+              
              
             </Block>
           </Block>

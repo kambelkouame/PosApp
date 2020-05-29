@@ -1,10 +1,10 @@
 import { Platform } from 'react-native';
-/*const RNFS = require('react-native-fs');
+var RNFS = require("react-native-fs")
 
 export const dirHome = Platform.select({
-  ios: `${RNFS.DocumentDirectoryPath}/PosApp`,
-  android: `${RNFS.ExternalStorageDirectoryPath}/PosApp`
+  ios: `${RNFS.DocumentDirectoryPath}/myAppName`,
+  android: `${RNFS.ExternalStorageDirectoryPath}/myAppName`
 });
-*/
-//export const dirPicutures = `${dirHome}/Pictures`;
-//export const dirAudio = `${dirHome}/Audio`;
+
+export const dirPicutures = `${dirHome}/Pictures`;
+export const dirAudio = `${dirHome}/Audio`;

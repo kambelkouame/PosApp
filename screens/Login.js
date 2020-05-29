@@ -9,7 +9,8 @@ import { Button, Block, Text, Input} from '../components';
 
 const { height } = Dimensions.get('window');
 
-class Login extends Component {
+
+class Login extends Component{
 
   constructor(){
     
@@ -17,7 +18,8 @@ class Login extends Component {
     this.state={
         email :'',
         phone :'',
-        password :'' 
+        password :'' ,
+        collection:''
        
     }
    
@@ -44,18 +46,18 @@ class Login extends Component {
 
     axios ({
       method: 'post',
-      url:  'http://192.168.8.101:3000/login',
+      url:  'http://192.168.8.104:3000/login',
       data: collection
     })
     .then(function (response) {
 
-      if(response.data.error =="l utilisateur n existe pas"){
+      if(response.data.error =="l\'utilisateur n\'existe pas"){
         Toast.show('l\'utilisateur n\'existe pas');
+        console.log(response.data.error)
+      }else if(response.data.message =="validate"){
        
-      }else{
-       
-        Toast.show('Bienvenue');
-        navigation.navigate('Overview',{collection}); 
+        Toast.show('validate');
+        navigation.navigate('Overview',{phone:collection.phone}); 
         
       
        
@@ -99,7 +101,7 @@ class Login extends Component {
          
           <Block flex={2.5} center>
             <Text h3 style={{ marginBottom: 6 }}>
-              Sign in 
+              Connexion
             </Text>
             <Text paragraph color="black3">
              Veillez vous connecter pour debuter!
@@ -142,7 +144,7 @@ class Login extends Component {
                 onPress={()=>this.submit(navigation)}
               // onPress={() => navigation.navigate('Overview')}
               >
-                <Text button>Sign in</Text>
+                <Text button>connexion</Text>
               </Button>
               <Text paragraph color="gray">
                 Vous ne disposer pas de compte? <Text
@@ -150,7 +152,7 @@ class Login extends Component {
                   color="blue"
 
                 onPress={() => navigation.navigate('Register')}>
-                     Sign up
+                     enregistrement
                 </Text>
               </Text>
             </Block>

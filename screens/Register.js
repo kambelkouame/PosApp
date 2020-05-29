@@ -60,27 +60,32 @@ class Register extends Component {
     collection.email=this.state.email,
     collection.phone=this.state.phone,
     collection.password=this.state.password
-    console.warn(collection);
+    
 
     let res={}
      axios({
       method: 'post',
-      url:  'http://192.168.8.102:3000/register',
+      url:  'http://192.168.8.105:3000/register',
       data: collection
     })
     
     .then(function (response) {
 
-      if(response.data=="ok"){ 
-        console.log(response.data)
+      if(response.data.message=="l\'utilisateur a été crée avec succes"){ 
+     
        Toast.show('Vous avez bien été enregistré!!,Veillez vous connecter pour debut');
        navigation.navigate("Login");
 
-     }else{
-      console.log(response.data)
-      Toast.show('une Erreur est survenue Veillez réeassayer');
+     }else if(response.data.message=="l\'utilisateur existe déja"){
+     
+      Toast.show('l\'utilisateur existe déja');
+       navigation.navigate("Register");
+      }else{
+       // console.log(response);
+           Toast.show('une Erreur est survenue Veillez réeassayer');
+       navigation.navigate("Register");
       }
-      console.log(response.data)
+     
     // console.log(response);
     //  console.log();
     })  
@@ -90,7 +95,7 @@ class Register extends Component {
     
     
    
-      this.props.navigation.navigate("Login");
+     // this.props.navigation.navigate("Login");
      
   // 
   }
@@ -121,7 +126,7 @@ const { navigation } = this.props;
           </Block>
           <Block flex={2.5} center>
             <Text h3 style={{ marginBottom: 6 }}>
-              Sign up 
+              Enregistrement
             </Text>
             <Text paragraph color="black3">
              Veillez vous enregistrer pour debuter!
@@ -184,14 +189,14 @@ const { navigation } = this.props;
                 style={{ marginBottom: 12 }}
               onPress={()=>this.submit(navigation)}
               >
-                <Text button>Register</Text>
+                <Text button>enregistrer</Text>
               </Button>
               <Text paragraph color="gray">
                 Vous Avez déjà un compte? <Text
                   height={18}
                   color="blue"
                    onPress={() => navigation.navigate('Login')}>
-                     Sign in
+                     connexion
                 </Text>
               </Text>
             </Block>

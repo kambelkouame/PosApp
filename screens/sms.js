@@ -1,20 +1,19 @@
 import React, { Component } from 'react';
-import { StyleSheet } from 'react-native';
 import { Image, KeyboardAvoidingView, Dimensions,FormValidationMessage,TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
 import Toast from 'react-native-simple-toast';
 import axios from 'axios';
-import { Button, Block, Text, Input } from '../components';
 
-const styles = StyleSheet.create({
-  forgot: {
-    flex: 1
-  }
-});
+
+
+import { Button, Block, Text, Input} from '../components';
 
 const { height } = Dimensions.get('window');
 
-class Forgot extends Component {
-   render() {
+
+
+class Sms extends Component {
+  
+  render() {
     const { navigation } = this.props;
 
     return (
@@ -38,29 +37,36 @@ class Forgot extends Component {
          
           <Block flex={2.5} center>
             <Text h3 style={{ marginBottom: 6 }}>
-              Mot de passe oublié?
+              recuperer votre compte
             </Text>
             <Text paragraph color="black3">
-             Veillez choisir une option de récuperation 
+             Veillez saisir votre Numéro de téléphone !
             </Text>
 
             <Block center style={{ marginTop: 44 }}>
-               <Button
+
+             
+              <Input
                 full
-                style={{ marginBottom: 12 }}
-               onPress={() => navigation.navigate('Email')}
-              >
-                <Text button>Email</Text>
-              </Button>
-               <Button
+                number
+                label="entrer votre numéro de téléphone"
+                onChangeText={(text)=>this.connexion(text,'password')}
+                style={{ marginBottom: 25 }}
+                 ref={ inmdp => this.inputmdp = inmdp }
+                placeholder="Ex:(225) xx xx xx xx"
+              
+              />
+
+              <Button
                 full
                 style={{ marginBottom: 12 }}
 
-                
-               onPress={() => navigation.navigate('Sms')}
+               
+              onPress={() => navigation.navigate('ConfirmSms')}
               >
-                <Text button>SMS</Text>
+                <Text button>Envoyer</Text>
               </Button>
+              
             </Block>
           
 
@@ -74,4 +80,4 @@ class Forgot extends Component {
   }
 }
 
-export default Forgot;
+export default Sms;

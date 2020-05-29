@@ -6,7 +6,7 @@ import * as theme from '../constants/theme';
 
 
 
-
+ 
 const styles = StyleSheet.create({
   overview: {
     flex: 1,
@@ -27,7 +27,11 @@ const styles = StyleSheet.create({
   }
 });
 
+
 class Overview extends Component {
+
+    
+ 
   static navigationOptions = {
     headerLeftContainerStyle: {
       paddingLeft: 24
@@ -39,7 +43,7 @@ class Overview extends Component {
       <TouchableOpacity><Icon menu /></TouchableOpacity>
     ),
     headerRight: (
-      <TouchableOpacity><Icon options /></TouchableOpacity>
+      <TouchableOpacity><Icon options /><Text></Text></TouchableOpacity>
     ),
     headerTitle: (
       <Block row middle><Text h4>Dashboard</Text></Block>
@@ -49,6 +53,7 @@ class Overview extends Component {
   render() {
     
     const { navigation } = this.props;
+    const phone = navigation.getParam('phone', 'NO-User'); 
 
     return (
       <SafeAreaView style={styles.overview}>
@@ -73,6 +78,7 @@ class Overview extends Component {
                 <Block row center>
                   <Label purple />
                   <Text paragraph color="gray">Nombre de Distributeur</Text>
+
                 </Block>
               </Block>
             </Block>
@@ -83,7 +89,7 @@ class Overview extends Component {
           
             <Card middle style={{ marginRight: 7 ,borderRadius: 20}} backgroundColor="#097C3E">
               <Icon vehicle />
-              <Text h3 bold  onPress={() => navigation.navigate('DistRegister')}  color="white" style={{ marginTop: 17 }}>+ NEW</Text>
+              <Text h3 bold  onPress={() => navigation.navigate('DistRegister',{phone:phone})}  color="white" style={{ marginTop: 17 }}>+ NEW</Text>
               <Text paragraph color="white"> Distributeur</Text>
             </Card>
             
@@ -91,7 +97,9 @@ class Overview extends Component {
             <Card middle style={{ marginLeft: 7,borderRadius: 20 }} backgroundColor="#097C3E">
                <Icon vehicle />
                 <Text h3 bold onPress={() => navigation.navigate('PosRegister')}  color="white" style={{ marginTop: 17 }}>+ NEW</Text>
-              <Text paragraph color="white">  Point de Vente</Text>
+              <Text paragraph color="white">Point de Vente</Text>
+
+              
             </Card>
           </Block>
 

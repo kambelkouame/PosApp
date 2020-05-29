@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image, StyleSheet, View ,Dimensions, TouchableWithoutFeedback,KeyboardAvoidingView,TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
+import { Image,Picker, StyleSheet, View ,Dimensions, TouchableWithoutFeedback,KeyboardAvoidingView,TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
 
 import { Button, Block, Text, Card, Input , Label} from '../components';
 import * as theme from '../constants/theme';
@@ -25,95 +25,155 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
    
-  }
+  },
+   container: {  
+         flex: 1,  
+         alignItems: 'center',  
+         justifyContent: 'center',  
+     },  
+    textStyle:{  
+        margin: 24,  
+        fontSize: 25,  
+        fontWeight: 'bold',  
+        textAlign: 'center',  
+    },  
+    pickerStyle:{  
+        height: 150,  
+        width: "80%",  
+        color: '#344953',  
+        justifyContent: 'center',  
+    }  
+
 });
 
 const { height } = Dimensions.get('window');
 
 class DistRegister extends Component {
 
+  
+
   constructor(){
+
     super();
+
     this.state={
-       city :'',
-     country :'',
-     address :'',
-     fullName:'',
-     GerantName:'',
-     AgencePhone:'' 
-      
+      typePos: 'init',
+     nomCommercial :'',
+      fullName:'',
+      agentTerrain:'',
+      telephone:'',
+      email:'',
+       pays :'',
+     ville :'',
+      adresse :'',
+      rccm :''   
     }
   }
 
   register(text, field){
-    if(field=='city'){
+    if(field=='ville'){
       this.setState({
-        city:text,
+        ville:text,
       })
-    }else if(field =='country'){
+    }else if(field =='pays'){
       this.setState({
-        country:text,
+        pays:text,
       })
-    }else if(field =='address'){
+    }else if(field =='adresse'){
       this.setState({
-        address:text,
+        adresse:text,
       })
-    }else if(field =='GerantName'){
+    }else if(field =='nomCommercial'){
       this.setState({
-        GerantName:text,
+        nomCommercial:text,
       })
-    }else if(field =='AgencePhone'){
+    }else if(field =='telephone'){
       this.setState({
-        AgencePhone:text,
+        telephone:text,
       })
     }
     else if(field =='fullName'){
       this.setState({
         fullName:text,
       })
+    } else if(field =='typePos'){
+      this.setState({
+        typePos:text,
+      })
+    }else if(field =='rccm'){
+      this.setState({
+        rccm:text,
+      })
+    }else if(field =='email'){
+      this.setState({
+        email:text,
+      })
     }
-
   }
 
   submit(navigation){
     let collection={}
     collection.fullName=this.state.fullName,
-    collection.address=this.state.address,
-    collection.country=this.state.country,
-    collection.GerantName=this.state.GerantName,
-    collection.AgencePhone=this.state.AgencePhone,
-    collection.city=this.state.city
+    collection.email=this.state.email,
+    collection.pays=this.state.pays,
+    collection.ville=this.state.ville
+    collection.adresse=this.state.adresse,
+    collection.nomCommercial=this.state.nomCommercial,
+    collection.rccm=this.state.rccm,
+     collection.agentTerrain=this.state.agentTerrain,
+     collection.typePos=this.state.typePos
    
-    console.warn(collection);
-
      axios({
       method: 'post',
-      url:  'http://192.168.8.102:3000/dis',
+      url:  'http://192.168.8.104:3000/dis',
       data: collection
     })
-    
     .then(function (response) {
+          console.log(response)
+          if(response.data.message=="succes"){
 
-      if(response.data=='ok'){ 
-      Toast.show('Vous avez bien enregistré le Distributeur!!');
-       console.log(response.data);
-      navigation.navigate('Overview'); 
-      
-     }else{
-      console.log(response.data);
-      Toast.show('une Erreur est survenue Veillez réeassayer');
-      }
- 
+          Toast.show('Vous avez bien enregistré le Distributeur!!');
+                if(collection.typePos=="Dis"){
+                 
+                  navigation.navigate('PosRegister',{id:response.data.id,agentTerrain:collection.agentTerrain}); 
+
+                 }else{
+                   navigation.navigate('Overview');
+                  }
+        
+           }else if(response.data.message=="Existe déjà"){
+            console.log(response.data.message); 
+         
+            Toast.show('lutilisateur existe deja');
+            }else{
+                Toast.show('Verifier tous les champs ');
+            }
+       
     })  
     .catch(function (error) {
       console.log(error);
     });
+    this.setState({
+       typePos: 'init',
+       nomCommercial :'',
+        fullName:'',
+        telephone:'',
+        email:'',
+        pays :'',
+        ville :'',
+        adresse :'',
+        rccm :''   
+    })
     
   }
 
   render() {
 
    const { navigation } = this.props;
+
+    const phone = navigation.getParam('userphone', 'contact'); 
+    this.state.agentTerrain=phone
+   
      return (
      
 
@@ -138,7 +198,7 @@ class DistRegister extends Component {
             <Block row space="between" style={{ marginTop: 25 }}>
               <Block>
             
-              <Text center h3 regular  color="white">ENREGISTREMENT DES FORMULIARES</Text>
+              <Text center h3 regular  color="white">ENREGISTREMENT DES FORMULIARES {this.state.agentTerain}</Text>
               </Block>
             </Block>
           </Card>
@@ -148,18 +208,67 @@ class DistRegister extends Component {
         <Block center middle>
             <Block   style={{ marginTop: 14 }}>
             <Block>
-             <Input
-              full
-              label="Ville"
-               placeholder="Ville"
-               onChangeText={(text)=>this.register(text,'city')}
-              style={{ marginBottom: 10,height: 40  }}
-            />
+
+
+             <View style={styles.container}>  
+                <Picker style={styles.pickerStyle}  
+                value={this.state.typePos}
+                        selectedValue={this.state.language}  
+                        onValueChange={(itemValue, itemIndex) =>  
+                            this.setState({language: itemValue, typePos: itemValue})}  
+                    >  
+                    <Picker.Item label="Selectionner" value="init" />  
+                    <Picker.Item label="POS independant" value="PosInd" />  
+                    <Picker.Item label="Distributeur" value="Dis" />  
+                </Picker>  
+              
+            </View> 
+
 
              <Input
               full
+              label="Nom commercial "
+              value={this.state.nomCommercial}
+               placeholder="Nom Commercial"
+               onChangeText={(text)=>this.register(text,'nomCommercial')}
+              style={{ marginBottom: 10,height: 40  }}
+            />
+            
+
+            <Input
+              full
+              text
+              label="Nom du Gerant"
+              value={this.state.fullName}
+               placeholder="Nom et prenom du Gerant"
+               onChangeText={(text)=>this.register(text,'fullName')}
+              style={{ marginBottom: 10,height: 40}}
+            />
+             
+           <Input
+              full
+              number
+               value={this.state.telephone}
+              label="Numéro Télephone"
+              onChangeText={(text)=>this.register(text,'telephone')}
+               placeholder="Ex: + 225 -- -- -- -- -- -- "
+              style={{ marginBottom: 10,height: 40 }}
+            />
+              <Input
+              full
+              text
+              label="Email"
+              value={this.state.email}
+              onChangeText={(text)=>this.register(text,'email')}
+               placeholder="Ex: email@email.email "
+              style={{ marginBottom: 10,height: 40 }}
+            />
+
+              <Input
+              full
               label="Pays"
-              onChangeText={(text)=>this.register(text,'country')}
+              value={this.state.pays}
+              onChangeText={(text)=>this.register(text,'pays')}
                placeholder="Pays"
               style={{ marginBottom: 10,height: 40 }}
             />
@@ -171,43 +280,34 @@ class DistRegister extends Component {
              <Input
                 full
                 text
-                label="Adresse"
-                 placeholder="Adresse"
-                 onChangeText={(text)=>this.register(text,'address')}
+                label="Ville"
+                 value={this.state.ville}
+                 placeholder="EX: Commune,Quartier-Rue n'"
+                 onChangeText={(text)=>this.register(text,'ville')}
                 style={{ marginBottom: 10 ,height: 40}}
               />
 
               <Input
                 full
                 text
-                label="Nom Commercial du Distributeur"
-                onChangeText={(text)=>this.register(text,'fullName')}
-                placeholder="Nom Commercial du Distributeur"
+                label="Adresse"
+                 placeholder="Ville"
+                 value={this.state.adresse}
+                 onChangeText={(text)=>this.register(text,'adresse')}
                 style={{ marginBottom: 10 ,height: 40}}
               />
 
-            
-            
+              <Input
+                full
+                text
+                label="Registre de commerce"
+                 placeholder="registre de commerce"
+                value={this.state.rccm}
+                 onChangeText={(text)=>this.register(text,'rccm')}
+                style={{ marginBottom: 10 ,height: 40}}
+              />
 
-            <Input
-              full
-              text
-              label="Nom du Gerant"
-               placeholder="Nom du Gerant"
-               onChangeText={(text)=>this.register(text,'GerantName')}
-              style={{ marginBottom: 10,height: 40}}
-            />
-              
-            <Input
-              full
-              number
-              label="Numéro Télephone"
-              onChangeText={(text)=>this.register(text,'AgencePhone')}
-               placeholder="Ex: + 225 -- -- -- -- -- -- "
-              style={{ marginBottom: 10,height: 40 }}
-            />
-
-        <View
+         <View
               style={{
                 flexDirection: "row",
                 marginBottom:5
@@ -219,26 +319,18 @@ class DistRegister extends Component {
                 flexDirection="row"
                // onPress={() => navigation.navigate('Camera')}
               >
-                <Text button>    scanner    </Text>
-              </Button>
+                <Text button
+                 onPress={() => navigation.navigate('Cameras')}>scanner</Text>
+                </Button>
               <Button
-               
                 style={{ marginBottom: 12,marginHorizontal:10 }}
                 flexDirection="row"
-
                 onPress={() => navigation.navigate('Signature')}
               >
                 <Text button>    signature    </Text>
               </Button>
 
-              <Button
-               
-               style={{ marginBottom: 12,marginHorizontal:10 }}
-               flexDirection="row"
-               onPress={() => navigation.navigate('PosRegister')}
-             >
-               <Text button>    POS     </Text>
-             </Button>
+            
 
               
         </View>
@@ -249,7 +341,7 @@ class DistRegister extends Component {
                 color="#6281C0" 
                 onPress={()=>this.submit(navigation)}
               >
-                <Text button>Validate</Text>
+                <Text button>Valider</Text>
               </Button>
              
             </Block>
@@ -262,5 +354,7 @@ class DistRegister extends Component {
     )
   }
 }
+
+ 
 
 export default DistRegister;
